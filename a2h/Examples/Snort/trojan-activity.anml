@@ -1,0 +1,40 @@
+<anml version="1.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <automata-network id="trojan-activity">
+    <state-transition-element id="dd61dd" symbol-set="[X]" start="all-input">
+      <activate-on-match element="dd63dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd62dd" symbol-set="[Y]" start="all-input">
+      <activate-on-match element="dd63dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd63dd" symbol-set="[m]">
+      <activate-on-match element="dd64dd"/>
+      <activate-on-match element="dd65dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd64dd" symbol-set="[A]">
+      <activate-on-match element="dd66dd"/>
+      <activate-on-match element="dd67dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd65dd" symbol-set="[B]">
+      <activate-on-match element="dd66dd"/>
+      <activate-on-match element="dd67dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd66dd" symbol-set="[i]">
+      <activate-on-match element="dd67dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd67dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd68dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd68dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd69dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd69dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd70dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd70dd" symbol-set="[a]">
+      <activate-on-match element="dd71dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd71dd" symbol-set="[a]">
+      <report-on-match reportcode="3"/>
+    </state-transition-element>
+  </automata-network>
+</anml>

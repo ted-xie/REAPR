@@ -1,0 +1,29 @@
+<AutoPilot:solution xmlns:AutoPilot="com.autoesl.autopilot.solution">
+    <name>
+        <value string="solution1"/>
+    </name>
+    <project>
+        <value string="test_io"/>
+    </project>
+    <targetInfo>
+        <TargetInfo value="xcku115:-flvb2104:-2-e"/>
+    </targetInfo>
+    <libraryList>
+        <library value="xilinx/kintexu/kintexu" name="DefaultPlatform"/>
+        <library value="xilinx/kintexu/kintexu_fpv7" name="DefaultPlatform"/>
+    </libraryList>
+    <clockList>
+        <clock default="false" name="default" uncertainty="0.900000" period="300MHz"/>
+    </clockList>
+    <config>
+        <config_rtl register_reset="1"/>
+        <config_interface m_axi_addr64="1"/>
+        <config_schedule relax_ii_for_timing="1"/>
+        <config_compile pipeline_loops="64" name_max_length="256"/>
+        <schedule model="bandwidth"/>
+    </config>
+    <ExportDesign askAgain="true" evaluate="false" rtl="verilog" formatName="ip_catalog">
+        <Format formatName="ip_catalog" description="" vendor="" library="" ipname="" version="1.0" driver_input_dir="" display_name="" taxonomy=""/>
+    </ExportDesign>
+</AutoPilot:solution>
+

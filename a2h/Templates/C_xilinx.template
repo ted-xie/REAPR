@@ -1,0 +1,56 @@
+typedef struct {
+    unsigned char data[64];
+} wwrd_512;
+
+void bandwidth(wwrd_512 * output_port, wwrd_512 * input_port) {
+    #pragma HLS INTERFACE m_axi port=output_port offset=slave bundle=gmem0
+    #pragma HLS INTERFACE m_axi port=input_port offset=slave bundle=gmem1
+
+    #pragma HLS INTERFACE s_axilite port=output_port bundle=control
+    #pragma HLS INTERFACE s_axilite port=input_port bundle=control
+
+    #pragma HLS INTERFACE s_axilite port=return bundle=control
+
+    #pragma HLS DATA_PACK variable=input_port
+    #pragma HLS DATA_PACK variable=output_port
+
+    unsigned long blockindex;
+    unsigned int j;
+
+    {% for ste in context['STE_vec'] %}
+    unsigned char bitvector_{{ste.id}}[256] = { {{ste.bitvector|reverse|join(",")}} };
+    {% if ste.start %}
+    unsigned char Enable_{{ste.id}} = 1;
+    {% else %}
+    unsigned char Enable_{{ste.id}} = 0;
+    {% endif %}
+    unsigned char match_{{ste.id}} = 0;
+    {% endfor %}
+
+    
+    for (blockindex = 0; blockindex < 10*1024*1024/64; blockindex++) {
+        #pragma HLS pipeline
+        wwrd_512 chunk = input_port[blockindex];
+        wwrd_512 reports;
+        for (j = 0; j < 64; j++) {
+            unsigned char numreports;
+            unsigned char indata = chunk.data[j];
+            // Compute active set
+            {% for ste in context['STE_vec'] %}
+            {% if not ste.start %}
+            Enable_{{ste.id}} = {% for item in context['inverse_connections'][ste.id] %}match_{{item}}{% if not loop.last %} | {% endif %}{% endfor %};
+            {% endif %}
+            {% endfor %}
+
+            // Compute the matches
+            {% for ste in context['STE_vec'] %}
+            match_{{ste.id}} = bitvector_{{ste.id}}[indata] && Enable_{{ste.id}};
+            {% if ste.report %}
+            if (match_{{ste.id}}) numreports++;
+            {% endif %}
+            {% endfor %}
+            reports.data[j] = numreports;
+        }
+        output_port[blockindex] = reports;
+    }
+}

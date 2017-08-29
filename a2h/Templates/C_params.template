@@ -1,0 +1,16 @@
+#ifndef PARAMS_H
+#define PARAMS_H
+
+#ifndef WORDS_PER_LINE
+#define WORDS_PER_LINE {{context['report_length']}}
+#endif
+
+#ifndef IN_DATA_SIZE_BYTES
+#define IN_DATA_SIZE_BYTES 1024*1024*100
+#endif
+
+#ifndef OUT_DATA_SIZE_BYTES
+#define OUT_DATA_SIZE_BYTES IN_DATA_SIZE_BYTES*WORDS_PER_LINE
+#endif
+
+#endif

@@ -1,0 +1,4 @@
+.autopilot/
+*.log
+impl/
+syn/

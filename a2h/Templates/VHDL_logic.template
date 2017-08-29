@@ -1,0 +1,231 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity {{context['entity']}} is
+    port (
+        clock, reset, run : in std_logic;
+        data_in : in std_logic_vector(7 downto 0);
+        {% if context['double'] %}
+        data_in2 : in std_logic_vector(7 downto 0);
+        {% endif %}
+        {% if context['vote'] %}
+        reports : out std_logic_vector(7 downto 0)
+        {% else %}
+        reports : out std_logic_vector({{context['report_length']}}-1 downto 0)
+        {% endif %}
+    );
+end {{context['entity']}};
+
+architecture Structure of {{context['entity']}} is
+    --------------------------
+    -- Component Declarations
+    --------------------------
+    {% if not context['double'] %}
+    COMPONENT ste_sim
+        PORT
+        (
+            bitvector    :    in std_logic_vector(255 downto 0);
+            char_in        :    in std_logic_vector(7 downto 0);
+            clock, reset, run        :    in std_logic;
+            Enable    :    in std_logic;
+            match        :    out std_logic
+        );
+    END COMPONENT;
+    {% else %}
+    COMPONENT ste_sim_2x
+        PORT
+        (
+            bitvector    :    in std_logic_vector(255 downto 0);
+            bitvector2    :    in std_logic_vector(255 downto 0);
+            char_in        :    in std_logic_vector(7 downto 0);
+            char_in2        :    in std_logic_vector(7 downto 0);
+            clock, reset, run        :    in std_logic;
+            Enable    :    in std_logic;
+            match        :    out std_logic
+        );
+    END COMPONENT;
+
+    {% endif %}
+    COMPONENT Counter
+        GENERIC    (target : INTEGER := 8;
+            at_target : INTEGER := 0);
+        PORT    (clock : IN std_logic;
+            Enable, Reset, run : IN std_logic;
+--            q : OUT std_logic_vector(11 DOWNTO 0);
+            match : OUT std_logic);
+    END COMPONENT;
+    {% if context['vote'] %}
+    COMPONENT Voter
+        GENERIC (DATA_LENGTH : INTEGER := 120;
+            WEIGHT_LENGTH : INTEGER := 8;
+            ID_LENGTH : INTEGER := 8);
+        PORT
+        (
+            clock, reset : in std_logic;
+            C0 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C1 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C2 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C3 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C4 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C5 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C6 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C7 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C8 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            C9 : in std_logic_vector(DATA_LENGTH-1 downto 0);
+            Vote : in std_logic_vector(WEIGHT_LENGTH-1 downto 0)
+        );
+    END COMPONENT;
+    {% endif %}
+    --------------------------
+    -- Signal Declarations
+    --------------------------
+    --- STEs
+    {% for ste in context['STE_vec'] %}
+    signal bitvector{{ste.id}} : std_logic_vector(255 downto 0) := "{{ste.bitvector}}";
+    {% if context['double'] %}
+    signal bitvector{{ste.id}}_2 : std_logic_vector(255 downto 0) := "{{ste.bitvector2}}";
+    {% endif %}
+    {% if ste.start %}
+    signal Enable{{ste.id}} : std_logic := '1';
+    {% else %}
+    signal Enable{{ste.id}} : std_logic := '0';
+    {% endif %}
+    signal match{{ste.id}} : std_logic := '0';
+    
+    {% endfor %}
+    --- ORs
+    {% for OR in context['OR_vec'] %}
+--    signal match{{OR.id}} : std_logic := '0';
+--    
+--    {% endfor %}
+    
+    --- ANDs
+--    {% for AND in context['AND_vec'] %}
+--    signal match{{AND.id}} : std_logic := '0';
+    
+    {% endfor %}
+    
+    --- Counters
+    {% for Counter in context['Counter_vec'] %}
+--    signal Enable{{Counter.id}}_cnt : std_logic := '0';
+--    signal Enable{{Counter.id}}_rst : std_logic := '0';
+--    signal match{{Counter.id}} : std_logic := '0';
+    
+    {% endfor %}
+
+    {% if context['rightmin'] %}
+    {% for id in context['RightMinMap'] %}
+    signal reports{{id}} : std_logic_vector({{context['DATA_LENGTH']}}-1 downto 0) := (others=>'0');
+
+    {% endfor %}
+    {% endif %}
+
+    {% if context['vote'] %}
+    signal reports_temp : std_logic_vector(9 downto 0); -- should be 8 bits, but Vivado synthesizes this wrong somehow. fix later
+    {% endif %}
+begin
+    --- STEs
+    {% for ste in context['STE_vec'] %}
+    -- {{ste.id}}
+    {% if not context['double'] %}
+    ste{{ste.id}} : ste_sim
+    port map(char_in=>data_in,
+            clock=>clock,
+            reset=>reset,
+            bitvector=>bitvector{{ste.id}},
+            Enable=>Enable{{ste.id}},
+            match=>match{{ste.id}},
+            run=>run);
+    {% else %}
+    ste{{ste.id}} : ste_sim_2x
+    port map(char_in=>data_in,
+            char_in2=>data_in2,
+            clock=>clock,
+            reset=>reset,
+            bitvector=>bitvector{{ste.id}},
+            bitvector2=>bitvector{{ste.id}}_2,
+            Enable=>Enable{{ste.id}},
+            match=>match{{ste.id}},
+            run=>run);
+    {% endif %}
+
+    {% if ste.report and not context['rightmin'] %}
+    reports({{context['Report_Addresses'][ste.id]}}) <= match{{ste.id}};
+    {% endif %}
+    {% if not ste.start%}
+    Enable{{ste.id}} <= {% for item in context['inverse_connections'][ste.id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% endif %}
+    {% endfor %}
+    
+    {% if context['rightmin'] %}
+    -- Right-minimized output
+    {% for id in context['RightMinMap'] %}
+    {% for item in context['RightMinMap'][id] %}
+    reports{{id}}({{loop.index0}}) <= match{{item}};
+    {% endfor %}
+
+    {% endfor %}
+    {% endif %}
+
+    {% if context['vote'] %}
+    -- Voter module
+    voter_inst : Voter
+    generic map(DATA_LENGTH=>{{context['DATA_LENGTH']}},
+            WEIGHT_LENGTH=>12,
+            ID_LENGTH=>8) -- should be 8 bits, but Vivado synthesizes this wrong. Fix later.
+    port map(clock=>clock,
+        reset=>reset,
+        C0=>reports10,
+        C1=>reports1,
+        C2=>reports2,
+        C3=>reports3,
+        C4=>reports4,
+        C5=>reports5,
+        C6=>reports6,
+        C7=>reports7,
+        C8=>reports8,
+        C9=>reports9,
+        Vote=>reports_temp);
+    reports <= reports_temp(7 downto 0);
+    {% endif %}
+    
+    --- ORs
+    {% for ORgate in context['OR_vec'] %}
+    -- {{ORgate.id}}
+--    match{{ORgate.id}} <= {% for item in context['inverse_connections'][ORgate.id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% if ORgate.report %}
+--    reports({{context['Report_Addresses'][ORgate.id]}}) <= match{{ORgate.id}};
+    {% endif %}
+    
+    {% endfor %}
+    
+    --- ANDs
+    {% for ANDgate in context['AND_vec'] %}
+    -- {{ANDgate.id}}
+--    match{{ANDgate.id}} <= {% for item in context['inverse_connections'][ANDgate.id] %}match{{item}}{% if not loop.last %} AND {% endif %}{% endfor %};
+    {% if ANDgate.report %}
+--    reports({{context['Report_Addresses'][ANDgate.id]}}) <= match{{ANDgate.id}};
+    {% endif %}
+    
+    {% endfor %}
+    --- Counters
+    {% for Counter in context['Counter_vec'] %}
+    -- {{Counter.id}}
+--    counter{{Counter.id}} : Counter
+--    generic map(target=>{{Counter.target}},
+--                at_target=>{{Counter.at_target}})
+--    port map(clock=>clock,
+--            Reset=>Enable{{Counter.id}}_rst,
+--            Enable=>Enable{{Counter.id}}_cnt,
+--            match=>match{{Counter.id}},
+--            run=>run);
+    
+--    Enable{{Counter.id}}_cnt <= {% for item in context['inverse_connections'][Counter.id + '_cnt'] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+--    Enable{{Counter.id}}_rst <= {% for item in context['inverse_connections'][Counter.id + '_rst'] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+--    {% if Counter.report %}
+--    reports({{context['Report_Addresses'][Counter.id]}}) <= match{{Counter.id}};
+--    {% endif %}
+    
+    {% endfor %}
+end Structure;

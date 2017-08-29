@@ -1,0 +1,62 @@
+<anml version="1.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <automata-network id="suspicious-login">
+    <state-transition-element id="dd47dd" symbol-set="[U]" start="all-input">
+      <activate-on-match element="dd48dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd48dd" symbol-set="[S]">
+      <activate-on-match element="dd49dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd49dd" symbol-set="[E]">
+      <activate-on-match element="dd50dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd50dd" symbol-set="[R]">
+      <activate-on-match element="dd51dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd51dd" symbol-set="[\s]">
+      <activate-on-match element="dd51dd"/>
+      <activate-on-match element="dd52dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd52dd" symbol-set="[y]">
+      <activate-on-match element="dd53dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd53dd" symbol-set="[0]">
+      <activate-on-match element="dd54dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd54dd" symbol-set="[4]">
+      <activate-on-match element="dd55dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd55dd" symbol-set="[9]">
+      <activate-on-match element="dd56dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd56dd" symbol-set="[5]">
+      <activate-on-match element="dd57dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd57dd" symbol-set="[7]">
+      <activate-on-match element="dd58dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd58dd" symbol-set="[5]">
+      <activate-on-match element="dd59dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd59dd" symbol-set="[0]">
+      <activate-on-match element="dd60dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd60dd" symbol-set="[4]">
+      <activate-on-match element="dd61dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd61dd" symbol-set="[6]">
+      <activate-on-match element="dd62dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd62dd" symbol-set="[/]">
+      <activate-on-match element="dd63dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd63dd" symbol-set="[s]">
+      <activate-on-match element="dd64dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd64dd" symbol-set="[m]">
+      <activate-on-match element="dd65dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd65dd" symbol-set="[i]">
+      <report-on-match reportcode="2"/>
+    </state-transition-element>
+  </automata-network>
+</anml>

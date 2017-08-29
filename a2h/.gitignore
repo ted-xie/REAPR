@@ -1,0 +1,10 @@
+*.pyc
+*.mif
+*.mem
+*.o
+*.cf
+OutputFiles/*
+MemoryInitializationFiles/*
+!Resources/*.vhd
+Resources/simu
+sim/*

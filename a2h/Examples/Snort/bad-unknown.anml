@@ -1,0 +1,181 @@
+<anml version="1.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <automata-network id="bad-unknown">
+    <state-transition-element id="dd54dd" symbol-set="[S]" start="all-input">
+      <activate-on-match element="dd55dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd55dd" symbol-set="[I]">
+      <activate-on-match element="dd56dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd56dd" symbol-set="[T]">
+      <activate-on-match element="dd57dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd57dd" symbol-set="[E]">
+      <activate-on-match element="dd58dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd58dd" symbol-set="[\s]">
+      <activate-on-match element="dd58dd"/>
+      <activate-on-match element="dd59dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd59dd" symbol-set="[E]">
+      <activate-on-match element="dd60dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd60dd" symbol-set="[X]">
+      <activate-on-match element="dd61dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd61dd" symbol-set="[E]">
+      <activate-on-match element="dd62dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd62dd" symbol-set="[C]">
+      <activate-on-match element="dd63dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd63dd" symbol-set="[\s]">
+      <activate-on-match element="dd64dd"/>
+      <activate-on-match element="dd65dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd64dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd64dd"/>
+      <activate-on-match element="dd65dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd65dd" symbol-set="[%]">
+      <activate-on-match element="dd66dd"/>
+      <activate-on-match element="dd67dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd66dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd66dd"/>
+      <activate-on-match element="dd67dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd67dd" symbol-set="[%]">
+      <activate-on-match element="dd68dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd68dd" symbol-set="[/]">
+      <activate-on-match element="dd69dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd69dd" symbol-set="[s]">
+      <activate-on-match element="dd70dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd70dd" symbol-set="[m]">
+      <activate-on-match element="dd71dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd71dd" symbol-set="[i]">
+      <report-on-match reportcode="2"/>
+    </state-transition-element>
+    <state-transition-element id="dd85dd" symbol-set="[S]" start="all-input">
+      <activate-on-match element="dd86dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd86dd" symbol-set="[I]">
+      <activate-on-match element="dd87dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd87dd" symbol-set="[T]">
+      <activate-on-match element="dd88dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd88dd" symbol-set="[E]">
+      <activate-on-match element="dd89dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd89dd" symbol-set="[\s]">
+      <activate-on-match element="dd89dd"/>
+      <activate-on-match element="dd90dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd90dd" symbol-set="[E]">
+      <activate-on-match element="dd91dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd91dd" symbol-set="[X]">
+      <activate-on-match element="dd92dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd92dd" symbol-set="[E]">
+      <activate-on-match element="dd93dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd93dd" symbol-set="[C]">
+      <activate-on-match element="dd94dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd94dd" symbol-set="[/]">
+      <activate-on-match element="dd95dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd95dd" symbol-set="[s]">
+      <activate-on-match element="dd96dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd96dd" symbol-set="[m]">
+      <activate-on-match element="dd97dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd97dd" symbol-set="[i]">
+      <report-on-match reportcode="3"/>
+    </state-transition-element>
+    <state-transition-element id="dd111dd" symbol-set="[C]" start="all-input">
+      <activate-on-match element="dd112dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd112dd" symbol-set="[W]">
+      <activate-on-match element="dd113dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd113dd" symbol-set="[D]">
+      <activate-on-match element="dd114dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd114dd" symbol-set="[\s]">
+      <activate-on-match element="dd114dd"/>
+      <activate-on-match element="dd115dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd115dd" symbol-set="[~]">
+      <activate-on-match element="dd116dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd116dd" symbol-set="[r]">
+      <activate-on-match element="dd117dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd117dd" symbol-set="[o]">
+      <activate-on-match element="dd118dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd118dd" symbol-set="[o]">
+      <activate-on-match element="dd119dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd119dd" symbol-set="[t]">
+      <activate-on-match element="dd120dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd120dd" symbol-set="[/]">
+      <activate-on-match element="dd121dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd121dd" symbol-set="[s]">
+      <activate-on-match element="dd122dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd122dd" symbol-set="[m]">
+      <activate-on-match element="dd123dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd123dd" symbol-set="[i]">
+      <report-on-match reportcode="4"/>
+    </state-transition-element>
+    <state-transition-element id="dd136dd" symbol-set="[C]" start="all-input">
+      <activate-on-match element="dd137dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd137dd" symbol-set="[W]">
+      <activate-on-match element="dd138dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd138dd" symbol-set="[D]">
+      <activate-on-match element="dd139dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd139dd" symbol-set="[\s]">
+      <activate-on-match element="dd140dd"/>
+      <activate-on-match element="dd141dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd140dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd140dd"/>
+      <activate-on-match element="dd141dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd141dd" symbol-set="[.]">
+      <activate-on-match element="dd142dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd142dd" symbol-set="[.]">
+      <activate-on-match element="dd143dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd143dd" symbol-set="[.]">
+      <activate-on-match element="dd144dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd144dd" symbol-set="[/]">
+      <activate-on-match element="dd145dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd145dd" symbol-set="[s]">
+      <activate-on-match element="dd146dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd146dd" symbol-set="[m]">
+      <activate-on-match element="dd147dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd147dd" symbol-set="[i]">
+      <report-on-match reportcode="5"/>
+    </state-transition-element>
+  </automata-network>
+</anml>

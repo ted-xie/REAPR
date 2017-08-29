@@ -1,0 +1,195 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity {{context['entity']}} is
+    port (
+        clock, reset, run : in std_logic;
+        data_in : in std_logic_vector(7 downto 0);
+        {% if context['rightmin'] %}
+        reports : out std_logic_vector({{context['rightmin_len']}}-1 downto 0)
+        {% else %}
+        reports : out std_logic_vector({{context['report_length']}}-1 downto 0)
+        {% endif %}
+    );
+end {{context['entity']}};
+
+architecture Structure of {{context['entity']}} is
+    --------------------------
+    -- Component Declarations
+    --------------------------
+    COMPONENT ste_xilinx
+        PORT
+        (
+            rom_q : in std_logic;
+            clock, reset, run        :    in std_logic;
+            Enable    :    in std_logic;
+            match        :    out std_logic
+        );
+    END COMPONENT;
+
+        COMPONENT ste_sim
+                PORT
+                (
+                        bitvector       :       in std_logic_vector(255 downto 0);
+                        char_in         :       in std_logic_vector(7 downto 0);
+                        clock, reset, run               :       in std_logic;
+                        Enable  :       in std_logic;
+                        match           :       out std_logic
+                );
+        END COMPONENT;
+
+
+    COMPONENT xilinx_bram
+        GENERIC
+        (
+            MemInitFile : STRING := ""
+        );
+        PORT
+        (
+            clock : in std_logic;
+            en : in std_logic;
+            addr : in std_logic_vector(7 downto 0);
+            data : out std_logic_vector(71 downto 0)    
+        );
+    END COMPONENT;
+
+    COMPONENT Counter
+        GENERIC    (target : INTEGER := 8;
+            at_target : INTEGER := 0);
+        PORT    (clock : IN std_logic;
+            Enable, Reset, run : IN std_logic;
+--            q : OUT std_logic_vector(11 DOWNTO 0);
+            match : OUT std_logic);
+    END COMPONENT;
+    --------------------------
+    -- Signal Declarations
+    --------------------------
+    -- BRAMs
+    {% for i in range(context['STE_vec']|length//72+1) %}
+    {% if i < context['bramlimit'] %}
+    signal bitvector{{i}} : std_logic_vector(71 downto 0);
+    {% endif %}
+    {% endfor %}
+
+    --- STEs
+    {% for ste in context['STE_vec'] %}
+    {% if ste.start %}
+    signal Enable{{ste.id}} : std_logic := '1';
+    {% else %}
+    signal Enable{{ste.id}} : std_logic := '0';
+    {% endif %}
+    signal match{{ste.id}} : std_logic := '0';
+    
+    {% endfor %}
+    --- ORs
+    {% for OR in context['OR_vec'] %}
+--    signal match{{OR.id}} : std_logic := '0';
+    
+    {% endfor %}
+    
+    --- ANDs
+    {% for AND in context['AND_vec'] %}
+--    signal match{{AND.id}} : std_logic := '0';
+    
+    {% endfor %}
+    
+    --- Counters
+    {% for Counter in context['Counter_vec'] %}
+--    signal Enable{{Counter.id}}_cnt : std_logic := '0';
+--    signal Enable{{Counter.id}}_rst : std_logic := '0';
+--    signal match{{Counter.id}} : std_logic := '0';
+    
+    {% endfor %}
+begin
+    --- Character class BRAM storage
+    {% for i in range(context['STE_vec']|length//72+1) %}
+    {% if i < context['bramlimit'] %}
+    bram{{i}} : xilinx_bram
+    generic map (MemInitFile=>"bram{{i}}.mem")
+    port map (
+        clock=>clock,
+        en=>'1',
+        addr=>data_in,
+        data=>bitvector{{i}}
+    );
+    {% endif %}
+    {% endfor %}
+    --- STEs
+    {% for ste in context['STE_vec'] %}
+    -- {{ste.id}}
+    {% if loop.index0 < context['bramlimit']*72  %}
+    ste{{ste.id}} : ste_xilinx
+    port map(
+            rom_q=>bitvector{{ste.num_id // 72}}({{ste.num_id % 72}}),
+            clock=>clock,
+            reset=>reset,
+            Enable=>Enable{{ste.id}},
+            match=>match{{ste.id}},
+            run=>run);
+    {% else %}
+    ste{{ste.id}} : ste_sim
+    port map (
+            char_in=>data_in,
+            bitvector=>"{{ste.bitvector}}",
+            clock=>clock,
+            reset=>reset,
+            Enable=>Enable{{ste.id}},
+            match=>match{{ste.id}},
+            run=>run
+        );
+    {% endif %}
+    {% if ste.report and not context['rightmin'] %}
+    reports({{context['Report_Addresses'][ste.id]}}) <= match{{ste.id}};
+    {% endif %}
+    {% if not ste.start%}
+    Enable{{ste.id}} <= {% for item in context['inverse_connections'][ste.id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% endif %}
+    {% endfor %}
+    
+    {% if context['rightmin'] %}
+    -- Right-minimized output
+    {% for id in context['RightMinMap'] %}
+    reports({{id}}) <= {% for item in context['RightMinMap'][id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% endfor %}
+    {% endif %}
+    
+    --- ORs
+    {% for ORgate in context['OR_vec'] %}
+    -- {{ORgate.id}}
+--    match{{ORgate.id}} <= {% for item in context['inverse_connections'][ORgate.id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% if ORgate.report %}
+--    reports({{context['Report_Addresses'][ORgate.id]}}) <= match{{ORgate.id}};
+    {% endif %}
+    
+    {% endfor %}
+    
+    --- ANDs
+    {% for ANDgate in context['AND_vec'] %}
+    -- {{ANDgate.id}}
+--    match{{ANDgate.id}} <= {% for item in context['inverse_connections'][ANDgate.id] %}match{{item}}{% if not loop.last %} AND {% endif %}{% endfor %};
+    {% if ANDgate.report %}
+--    reports({{context['Report_Addresses'][ANDgate.id]}}) <= match{{ANDgate.id}};
+    {% endif %}
+    
+    {% endfor %}
+    --- Counters
+    {% for Counter in context['Counter_vec'] %}
+    -- {{Counter.id}}
+--    counter{{Counter.id}} : Counter
+--    generic map(target=>{{Counter.target}},
+--                at_target=>{{Counter.at_target}})
+--    port map(clock=>clock,
+--            Reset=>Enable{{Counter.id}}_rst,
+--            Enable=>Enable{{Counter.id}}_cnt,
+--            match=>match{{Counter.id}},
+--            run=>run);
+    
+--    Enable{{Counter.id}}_cnt <= {% for item in context['inverse_connections'][Counter.id + '_cnt'] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+--    Enable{{Counter.id}}_rst <= {% for item in context['inverse_connections'][Counter.id + '_rst'] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% if Counter.report %}
+--    reports({{context['Report_Addresses'][Counter.id]}}) <= match{{Counter.id}};
+    {% endif %}
+    
+    {% endfor %}
+end Structure;

@@ -1,0 +1,115 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity {{context['entity']}} is
+    port (
+        clock, reset, run : in std_logic;
+        data_in : in std_logic_vector(7 downto 0);
+        reports : out std_logic_vector({{context['report_length']}}-1 downto 0)
+    );
+end {{context['entity']}};
+
+architecture Structure of {{context['entity']}} is
+    --------------------------
+    -- Component Declarations
+    component ste_ram is
+        generic (
+            bitvector : std_logic_vector(255 downto 0)
+        );
+        port
+        (
+            char_in        :    in std_logic_vector(7 downto 0);
+            clock, reset, run        :    in std_logic;
+            Enable    :    in std_logic;
+            match        :    out std_logic
+        );
+    end component;
+    component Counter
+        GENERIC    (target : INTEGER := 8;
+            at_target : INTEGER := 0);
+        PORT    (clock : IN std_logic;
+            Enable, Reset, run : IN std_logic;
+--            q : OUT std_logic_vector(11 DOWNTO 0);
+            match : OUT std_logic);
+    end component;
+    --------------------------
+    -- Signal Declarations
+    --------------------------
+    --- STEs
+    {% for ste in context['STE_vec'] %}
+    constant bitvector{{ste.id}} : std_logic_vector(255 downto 0) := "{{ste.bitvector}}";
+    {% if ste.start == 'all-input' %}
+    signal Enable{{ste.id}} : std_logic := '1';
+    {% else %}
+    signal Enable{{ste.id}} : std_logic := '0';
+    {% endif %}
+    signal match{{ste.id}} : std_logic := '0';
+    
+    {% endfor %}
+    --- ORs
+    {% for OR in context['OR_vec'] %}
+    signal match{{OR.id}} : std_logic := '0';
+    
+    {% endfor %}
+    
+    --- Counters
+    {% for Counter in context['Counter_vec'] %}
+    signal Enable{{Counter.id}}_cnt : std_logic_vector(15 downto 0) := (others=>'0');
+    signal Enable{{Counter.id}}_rst : std_logic_vector(15 downto 0) := (others=>'0');
+    signal match{{Counter.id}} : std_logic := '0';
+    
+    {% endfor %}
+begin
+    --- STEs
+    {% for ste in context['STE_vec'] %}
+    -- {{ste.id}}
+    ste{{ste.id}} : ste_ram
+    generic map(bitvector=>bitvector{{ste.id}})
+    port map(char_in=>data_in,
+            clock=>clock,
+            reset=>reset,
+            Enable=>Enable{{ste.id}},
+            match=>match{{ste.id}},
+            run=>run);
+    
+    {% if ste.report %}
+    reports({{context['Report_Addresses'][ste.id]}}) <= match{{ste.id}};
+    {% endif %}
+    {% if ste.start == 'all-input' %}
+    Enable{{ste.id}} <= '1';
+    {% else %}
+    Enable{{ste.id}} <= {% for item in context['inverse_connections'][ste.id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% endif %}
+    {% endfor %}
+    
+    --- ORs
+    {% for ORgate in context['OR_vec'] %}
+    -- {{ORgate.id}}
+    match{{ORgate.id}} <= {% for item in context['inverse_connections'][ORgate.id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% if ORgate.report %}
+    reports({{context['Report_Addresses'][ORgate.id]}}) <= match{{ORgate.id}};
+    {% endif %}
+    
+    {% endfor %}
+    
+    --- Counters
+    {% for Counter in context['Counter_vec'] %}
+    -- {{Counter.id}}
+    counter{{Counter.id}} : Counter
+    generic map(target=>{{Counter.target}},
+                at_target=>{{Counter.at_target}})
+    port map(clock=>clock,
+            Reset=>Enable{{Counter.id}}_rst,
+            Enable=>Enable{{Counter.id}}_cnt,
+            match=>match{{Counter.id}},
+            run=>run);
+    
+    Enable{{ste.id}}_cnt <= {% for item in context['inverse_connections'][Counter.id + '_cnt'] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    Enable{{ste.id}} <= {% for item in context['inverse_connections' + '_rst'][ste.id] %}match{{item}}{% if not loop.last %} OR {% endif %}{% endfor %};
+    {% if Counter.report %}
+    reports({{context['Report_Addresses'][Counter.id]}}) <= match{{Counter.id}};
+    {% endif %}
+    
+    {% endfor %}
+end Structure;

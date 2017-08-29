@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<anml version="1.0" units="0.001">
+    <automata-network id="donut" >
+        <state-transition-element id="1" symbol-set="[Dd]" start="all-input">
+            <activate-on-match element="2"/>
+        </state-transition-element>
+        <state-transition-element id="2" symbol-set="[o]">
+            <activate-on-match element="3"/>
+            <activate-on-match element="6"/>
+        </state-transition-element>
+        <state-transition-element id="3" symbol-set="[n]">
+            <activate-on-match element="4"/>
+        </state-transition-element>
+        <state-transition-element id="4" symbol-set="[u]">
+            <activate-on-match element="5"/>
+        </state-transition-element>
+        <state-transition-element id="5" symbol-set="[t]">
+            <report-on-match/>
+        </state-transition-element>
+        <state-transition-element id="6" symbol-set="[u]">
+            <activate-on-match element="7"/>
+        </state-transition-element>
+        <state-transition-element id="7" symbol-set="[g]">
+            <activate-on-match element="8"/>
+        </state-transition-element>
+        <state-transition-element id="8" symbol-set="[h]">
+            <activate-on-match element="3"/>
+        </state-transition-element>
+    </automata-network>
+</anml>
+

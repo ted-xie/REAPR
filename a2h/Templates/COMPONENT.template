@@ -1,0 +1,10 @@
+-- Copy this code into the architecture section of your VHDL code
+-- to declare your {{context['entity']}} component.
+
+COMPONENT {{context['entity']}}
+    PORT (
+        clock, reset : in std_logic;
+        data_in : in std_logic_vector(7 downto 0);
+        reports : in std_logic_vector({{context['report_length']}}-1 downto 0);        
+    );
+END COMPONENT;

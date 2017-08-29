@@ -1,0 +1,95 @@
+<anml version="1.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <automata-network id="misc-activity">
+    <state-transition-element id="dd73dd" symbol-set="[C]" start="all-input">
+      <activate-on-match element="dd74dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd74dd" symbol-set="[o]">
+      <activate-on-match element="dd75dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd75dd" symbol-set="[n]">
+      <activate-on-match element="dd76dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd76dd" symbol-set="[t]">
+      <activate-on-match element="dd77dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd77dd" symbol-set="[e]">
+      <activate-on-match element="dd78dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd78dd" symbol-set="[n]">
+      <activate-on-match element="dd79dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd79dd" symbol-set="[t]">
+      <activate-on-match element="dd80dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd80dd" symbol-set="[-]">
+      <activate-on-match element="dd81dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd81dd" symbol-set="[T]">
+      <activate-on-match element="dd82dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd82dd" symbol-set="[y]">
+      <activate-on-match element="dd83dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd83dd" symbol-set="[p]">
+      <activate-on-match element="dd84dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd84dd" symbol-set="[e]">
+      <activate-on-match element="dd85dd"/>
+      <activate-on-match element="dd86dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd85dd" symbol-set="[\s]">
+      <activate-on-match element="dd85dd"/>
+      <activate-on-match element="dd86dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd86dd" symbol-set="[:]">
+      <activate-on-match element="dd87dd"/>
+      <activate-on-match element="dd88dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd87dd" symbol-set="[\s]">
+      <activate-on-match element="dd87dd"/>
+      <activate-on-match element="dd88dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd88dd" symbol-set="[a]">
+      <activate-on-match element="dd89dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd89dd" symbol-set="[u]">
+      <activate-on-match element="dd90dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd90dd" symbol-set="[d]">
+      <activate-on-match element="dd91dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd91dd" symbol-set="[i]">
+      <activate-on-match element="dd92dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd92dd" symbol-set="[o]">
+      <activate-on-match element="dd93dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd93dd" symbol-set="[/]">
+      <activate-on-match element="dd94dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd94dd" symbol-set="[m]">
+      <activate-on-match element="dd95dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd95dd" symbol-set="[i]">
+      <activate-on-match element="dd96dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd96dd" symbol-set="[d]">
+      <activate-on-match element="dd97dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd97dd" symbol-set="[i]">
+      <activate-on-match element="dd98dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd98dd" symbol-set="[/]">
+      <activate-on-match element="dd99dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd99dd" symbol-set="[s]">
+      <activate-on-match element="dd100dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd100dd" symbol-set="[m]">
+      <activate-on-match element="dd101dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd101dd" symbol-set="[i]">
+      <report-on-match reportcode="2"/>
+    </state-transition-element>
+  </automata-network>
+</anml>

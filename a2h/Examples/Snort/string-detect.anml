@@ -1,0 +1,36 @@
+<anml version="1.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <automata-network id="string-detect">
+    <state-transition-element id="dd43dd" symbol-set="[\s]" start="all-input">
+      <activate-on-match element="dd43dd"/>
+      <activate-on-match element="dd44dd"/>
+      <activate-on-match element="dd45dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd44dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd44dd"/>
+      <activate-on-match element="dd45dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd45dd" symbol-set="[%]">
+      <activate-on-match element="dd46dd"/>
+      <activate-on-match element="dd47dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd46dd" symbol-set="[^\x0a]">
+      <activate-on-match element="dd46dd"/>
+      <activate-on-match element="dd47dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd47dd" symbol-set="[%]">
+      <activate-on-match element="dd48dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd48dd" symbol-set="[/]">
+      <activate-on-match element="dd49dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd49dd" symbol-set="[s]">
+      <activate-on-match element="dd50dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd50dd" symbol-set="[m]">
+      <activate-on-match element="dd51dd"/>
+    </state-transition-element>
+    <state-transition-element id="dd51dd" symbol-set="[i]">
+      <report-on-match reportcode="2"/>
+    </state-transition-element>
+  </automata-network>
+</anml>
