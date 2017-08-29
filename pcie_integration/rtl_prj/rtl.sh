@@ -1,9 +1,9 @@
 #!/bin/bash
-#Common paths
-#Ted's Python tool
-ANML2HDL_PATH=/net/af5/vqd8a/Xilinx-SDAccel/Codes/AutomataProcessingEngine/anml2hdl_github
-#
-TOOL_PATH=/net/af5/vqd8a/Xilinx-SDAccel/Codes/AutomataProcessingEngine/python_tools
+# Main script for integrating RTL kernels with automaton designs
+# Original author: Ted Xie (ted.xie@virginia.edu) and Vinh Dang (vqd8a@virginia.edu)
+# Collaborating author: Chunkun Bo (cb2yy@virginia.edu) for automata hook
+A2H_PATH=../../a2h
+TOOL_PATH=../python_tools
 SDACCEL_REPO_PATH=/net/af5/vqd8a/Xilinx-SDAccel/SDAccel_Examples
 
 PROJ_PATH=$(dirname $PWD)
@@ -27,7 +27,7 @@ set -e
 #Generate automata processing RTL module
 if [ $IO_TEST = 0 ]; then
     echo "1.Generate automata processing RTL module"
-    cd $ANML2HDL_PATH
+    cd $A2H_PATH
     python anml2hdl.py -a $ANML -o $OUTFILE -e $ENTITY -t $TARGET
     cp OutputFiles/$OUTFILE $PROJ_PATH/vv_prj/hdl
     cp Resources/ste_sim.vhd $PROJ_PATH/vv_prj/hdl
