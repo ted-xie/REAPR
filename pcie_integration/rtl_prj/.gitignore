@@ -1,0 +1,9 @@
+.Xil/
+_*/
+io_global
+nohup.out
+packaged_*/
+*.jou
+*.log
+tmp_*/
+xclbin/

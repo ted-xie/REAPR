@@ -2,11 +2,11 @@
 # Main script for integrating RTL kernels with automaton designs
 # Original author: Ted Xie (ted.xie@virginia.edu) and Vinh Dang (vqd8a@virginia.edu)
 # Collaborating author: Chunkun Bo (cb2yy@virginia.edu) for automata hook
-A2H_PATH=../../a2h
-TOOL_PATH=../python_tools
+A2H_PATH=$REAPR_HOME/a2h
+TOOL_PATH=$REAPR_HOME/pcie_integration/python_tools
 SDACCEL_REPO_PATH=/net/af5/vqd8a/Xilinx-SDAccel/SDAccel_Examples
 
-PROJ_PATH=$(dirname $PWD)
+PROJ_PATH=$REAPR_HOME/pcie_integration
 
 #Application-specific and FPGA board settings
 ANML=Examples/brill.anml
@@ -28,7 +28,7 @@ set -e
 if [ $IO_TEST = 0 ]; then
     echo "1.Generate automata processing RTL module"
     cd $A2H_PATH
-    python anml2hdl.py -a $ANML -o $OUTFILE -e $ENTITY -t $TARGET
+    python a2h.py -a $ANML -o $OUTFILE -e $ENTITY -t $TARGET
     cp OutputFiles/$OUTFILE $PROJ_PATH/vv_prj/hdl
     cp Resources/ste_sim.vhd $PROJ_PATH/vv_prj/hdl
 fi
@@ -80,4 +80,4 @@ python $TOOL_PATH/makefile_gen.py $SDACCEL_REPO_PATH $REPORT_SIZE $DDR_BANKS $IO
 #Compile the project using SDAccel (including generating IP and XO files from the RTL kernel)
 echo "11.Compile"
 cd $PROJ_PATH/rtl_prj
-nohup make all TARGETS=hw
+nohup make all TARGETS=hw &
