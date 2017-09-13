@@ -8,15 +8,27 @@ SDACCEL_REPO_PATH=/net/af5/vqd8a/Xilinx-SDAccel/SDAccel_Examples
 
 PROJ_PATH=$REAPR_HOME/pcie_integration
 
+#############################################
 #Application-specific and FPGA board settings
+#############################################
+
+# set this to the path of your desired ANML file (ex. /tmp/something.anml)
 ANML=Examples/brill.anml
+# set the output VHDL file name
 OUTFILE=Brill.vhd
+# the entity name for the VHDL entity
 ENTITY=Brill
+# logic=LUT-based transitions, xilinx=Xilinx BRAM
 TARGET=logic
+# how many reporting elements are there?
 REPORT_SIZE=218
+# size in MB of the input file
 MAX_DATASIZE_MB=10
+# number of DDR banks available to your board
 DDR_BANKS=4
+# which FPGA device
 DEVICE_NAME="xcku115-flvb2104-2-e"
+# target synthesis frequency - may need to manually change based on timing performance w/ vivado
 CLK_FREQ_MHZ=300
 #IO_TEST: Set to 1 if running I/O kernel only, otherwise set to 0 for automata module hooking
 IO_TEST=0
