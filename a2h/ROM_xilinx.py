@@ -18,7 +18,7 @@ class ROM_xilinx:
             temp_matrix[row] = self.STE_vec[row].bitvector[::-1]
 
         # Rotate by 90 degrees clockwise
-        self.Matrix = zip(*temp_matrix[::-1])
+        self.Matrix = list(zip(*temp_matrix[::-1]))
 
     def Generate(self):
         directory_delim = '/'

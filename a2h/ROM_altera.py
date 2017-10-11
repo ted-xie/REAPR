@@ -7,7 +7,7 @@ class ROM_altera:
         self.h = len(STE_vec)
         
         if self.h > 65536:
-            print "Error: Too many STEs (needs to be less than 65536)"
+            print("Error: Too many STEs (needs to be less than 65536)")
         
         self.Matrix = [''] * self.h
         self.PopulateMatrix()

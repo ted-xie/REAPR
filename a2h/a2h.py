@@ -313,7 +313,7 @@ for child in root.iter('counter'):
 
 # Inverse connections map
 inverse_connections = { }
-for k, v in connections.items():
+for k, v in list(connections.items()):
     for item in v:
         if item in inverse_connections:
             inverse_connections[item].append(k)
