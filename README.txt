@@ -53,6 +53,13 @@ You will need access to SDAccel 2017.1 and all of its affiliated software such
 as Vivado and Vivado HLS. An SDAccel-compatible board such as the Alpha Data
 ADM-PCIE-KU3 is also necessary to run the accelerator kernels.
 
+* python3
+* virtualenv
+* pip
+* Xilinx Vivado HLS 2017.1
+* Xilinx SDAccel 2017.1
+* Synopsys VCS-MX (any version) for testbench simulation
+
 FILE HIERARCHY
 ==============
 REAPR/
@@ -73,7 +80,8 @@ SETUP
 =====
 The only setup necessary is to run the source_me.sh script in the root directory
 of this project.  This script will set up the REAPR_HOME environment variable
-that the compilation scripts depend upon.
+that the compilation scripts depend upon and also generate a python virtual
+environment with Jinja2 pre-installed.
 
 $ source source_me.sh
 
