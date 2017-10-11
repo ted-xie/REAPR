@@ -2,7 +2,8 @@
 export REAPR_HOME=$PWD
 # create a virtual env if one doesn't exist already
 if [ ! -d "virt" ]; then
-    virtualenv virt
+	# force usage of python3
+    virtualenv virt -p python3
     source virt/bin/activate
     # install jinja2 for template rendering
     pip install jinja2
