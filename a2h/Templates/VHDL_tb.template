@@ -46,7 +46,9 @@ begin
             readline(infile, rdline); -- read one line into inline
             read(inline, symbol);
             data_in <= symbol;
-            
+            report_i <= reports;
+            write(wrline, report_i, right, {{context['report_length']}});
+            writeline(outfile, wrline);
             clock <= '1';
             wait for 50 ns;
             clock <= '0';
