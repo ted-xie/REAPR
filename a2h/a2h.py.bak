@@ -313,7 +313,7 @@ for child in root.iter('counter'):
 
 # Inverse connections map
 inverse_connections = { }
-for k, v in connections.items():
+for k, v in connections.iteritems():
     for item in v:
         if item in inverse_connections:
             inverse_connections[item].append(k)
@@ -341,7 +341,7 @@ for id in RightMinMap:
     if len(RightMinMap[id]) > lenmax:
         lenmax = len(RightMinMap[id])
 context['DATA_LENGTH'] = lenmax
-context["tb_infile"] = stimulus_file
+context["tb_infile"] = stimulus
 
 env = Environment(loader=FileSystemLoader('./Templates'), trim_blocks=True, lstrip_blocks=True)
 template = env.get_template(language + '_' + target + '.template')
