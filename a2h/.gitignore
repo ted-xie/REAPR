@@ -9,3 +9,4 @@ MemoryInitializationFiles/*
 !Resources/*.vhd
 Resources/simu
 sim/*
+__pycache__/

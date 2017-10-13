@@ -7,4 +7,7 @@ if [ ! -d "virt" ]; then
     source virt/bin/activate
     # install jinja2 for template rendering
     pip install jinja2
+else
+    # if virtual env already exists, just activate it
+    source virt/bin/activate
 fi
