@@ -7,7 +7,8 @@ if [ ! -d "virt" ]; then
     source virt/bin/activate
     # install jinja2 for template rendering
     pip install jinja2
-else
-    # if virtual env already exists, just activate it
-    source virt/bin/activate
+    deactivate
 fi
+# make a custom command for REAPR's python installation
+alias reapr_python="$REAPR_HOME/virt/bin/python3"
+

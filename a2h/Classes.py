@@ -71,6 +71,9 @@ class STE:
                             if x == ord('_'):
                                 temp_symbol_set[x] = 1
                         skip_num = 1
+                    elif escaped_char == ".":
+                        temp_symbol_set[ord('.')] = 1
+                        skip_num = 1
                 elif c == '.':
                     for x in range(256):
                         if chr(x) != '\n':
