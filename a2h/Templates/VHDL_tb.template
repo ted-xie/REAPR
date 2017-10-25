@@ -1,65 +1,54 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use STD.textio.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE std.textio.all;
 use ieee.std_logic_textio.all;
 
-entity {{context['entity']}}_tb is
+entity TB is
+end TB;
 
-end {{context['entity']}}_tb;
-
-architecture tb of {{context['entity']}} is
-    -- DUT
-    component {{context['entity']}} is
-        port (
-            clock, reset, run : in std_logic;
-            data_in : in std_logic_vector(7 downto 0);
-            reports : out std_logic_vector({{context['report_length']}}-1 downto 0)
-        );
-    end {{context['entity']}};
-
-    signal clock, reset, run : std_logic;
-    signal data_in : std_logic_vector(7 downto 0);
-    signal reports : std_logic_vector({{context['report_length']}}-1 downto 0);
-
-    file infile : text;
-    file outfile : text;
+architecture Test of TB is
+	component {{context['entity']}} is
+		port (
+			clock, reset, run : in std_logic;
+			data_in : in std_logic_vector(7 downto 0);
+			reports : out std_logic_vector({{context['report_length']}}-1 downto 0)
+		);
+	end component;
+	signal clock : std_logic := '1';
+	signal reset : std_logic := '1';
+	signal run : std_logic := '1';
+	signal data_in : std_logic_vector(7 downto 0) := (others=>'0');
+	signal reports : std_logic_vector({{context['report_length']}}-1 downto 0);
 begin
-
-    automata_dut : {{context['entity']}}
-        port map(clock=>clock,
-                    reset=>reset,
-                    run=>run,
-                    data_in=>data_in,
-                    reports=>reports);
-
-    process
-        variable rdline : line;
-        variable wrline : line;
-        variable symbol : std_logic_vector(7 downto 0);
-        variable report_i : std_logic_vector({{context['report_length']}}-1 downto 0);
-    begin
-        file_open(infile, "{{context['tb_infile']}}", read_mode);
-        file_open(outfile, "{{context['tb_outfile']}}", write_mode);
-
-        while not endfile(infile) loop
-            readline(infile, rdline); -- read one line into inline
-            read(inline, symbol);
-            data_in <= symbol;
-            report_i <= reports;
-            write(wrline, report_i, right, {{context['report_length']}});
-            writeline(outfile, wrline);
-            clock <= '1';
-            wait for 50 ns;
-            clock <= '0';
-            wait for 50 ns;
-        end loop;
-
-        file_close(infile);
-        file_close(outfile);
-
-        wait;
-    end process;
-
-end architecture;
-
+	dut : {{context['entity']}}
+	port map(
+		clock=>clock,
+		reset=>reset,
+		run=>run,
+		data_in=>data_in,
+		reports=>reports
+	);
+	
+	process
+		file vec_file: text;
+		variable buf_in: line;
+		variable testv: std_logic_vector(7 downto 0);
+	begin
+		wait for 4 ns;
+		reset <= '0';
+		clock <= '0';
+		wait for 4 ns;
+		clock <= '1';
+		file_open(vec_file, "{{context['tb_infile']}}", read_mode);
+		while not endfile(vec_file) loop
+			readline(vec_file, buf_in);
+			read(buf_in, testv);
+			data_in <= testv;
+			
+			wait for 4 ns;
+			clock <= not clock;
+			wait for 4 ns;
+			clock <= not clock;
+		end loop;
+	end process;
+end Test;

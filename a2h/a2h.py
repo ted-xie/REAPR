@@ -58,7 +58,10 @@ if target == "tb":
         print("Error: Testbench mode required a stimulus (-s) input!")
         exit(1)
     else:
-        stimulus_file = args.stimulus
+        stimulus_file = os.path.basename(args.stimulus) + ".bin"
+
+    # Generate stimulus file
+    text2bin(args.stimulus, stimulus_file)
 
 language = ''    
 if not args.language:
@@ -76,6 +79,10 @@ else:
                 Verilog (--language v), or \
                 C (--language c)')
         exit(1)
+
+# Testbench mode only supports VHDL
+if target == "tb":
+    language = "VHDL"
 
 rightmin = False        
 if args.rightmin:
@@ -349,6 +356,7 @@ template = env.get_template(language + '_' + target + '.template')
 # Render the template for the output file.
 rendered_file = template.render(context=context)
 
+
 # Write output file
 with open(out_path, 'w') as outFile:
     outFile.write(rendered_file)
@@ -364,18 +372,18 @@ if language == 'C':
     with open('OutputFiles' + directory_delim + 'Params.h', 'w') as outFile:
         outFile.write(rendered_file)
     
-# Render template for component declaration file.
-template = env.get_template('COMPONENT.template')
-rendered_file = template.render(context=context)
-
-# Write output for component declaration file
-with open(out_path+'.cmp', 'w') as outFile:
-    outFile.write(rendered_file)
-    
-# Write STE id => report vector mappings to ReportMapping.txt
-mapping_filename = 'OutputFiles' + directory_delim + args.entity + '_ReportMapping.txt'
-fd = open(mapping_filename, 'w')
-fd.truncate()
+## Render template for component declaration file.
+#template = env.get_template('COMPONENT.template')
+#rendered_file = template.render(context=context)
+#
+## Write output for component declaration file
+#with open(out_path+'.cmp', 'w') as outFile:
+#    outFile.write(rendered_file)
+#    
+## Write STE id => report vector mappings to ReportMapping.txt
+#mapping_filename = 'OutputFiles' + directory_delim + args.entity + '_ReportMapping.txt'
+#fd = open(mapping_filename, 'w')
+#fd.truncate()
 
 # Generate initialization ROM for STE bit vectors
 # if (target == 'altera'):
@@ -405,7 +413,7 @@ if (target == 'xilinx'):
 #        line = str(context['Report_Addresses'][ORgate.id]) + '|' + ORgate.id + '\n'
 #        fd.write(line)    
     
-fd.close()
+#fd.close()
 
 # Computer clustering coefficient
 cc = clustering_coefficient(connections)
