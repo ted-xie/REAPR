@@ -9,6 +9,7 @@ from copy import deepcopy
 from ROM_xilinx import *
 from fa_cluster import *
 from text2bin import text2bin
+import math
 
 directory_delim = '/'
 if os.name == 'nt': # Windows directory delimiter is a backslash
@@ -343,11 +344,19 @@ context['bramlimit'] = bramlimit
 context['vote'] = vote
 context['double'] = double
 
-lenmax = 0
+Class_Lengths = {}
+Class_LengthsLog2 = {}
 for id in RightMinMap:
-    if len(RightMinMap[id]) > lenmax:
-        lenmax = len(RightMinMap[id])
-context['DATA_LENGTH'] = lenmax
+    id_int = int(id)
+    if id_int == 10:
+        id_int = 0
+    class_length_i = len(RightMinMap[id])
+    length_log2 = math.log(class_length_i, 2)
+    Class_Lengths[id_int] = class_length_i
+    Class_LengthsLog2[id_int] = int(math.ceil(length_log2)) 
+
+context['Class_Lengths'] = Class_Lengths
+context['Class_LengthsLog2'] = Class_LengthsLog2
 context["tb_infile"] = stimulus_file
 
 env = Environment(loader=FileSystemLoader('./Templates'), trim_blocks=True, lstrip_blocks=True)
