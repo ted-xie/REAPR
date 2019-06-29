@@ -56,26 +56,44 @@ architecture Structure of {{context['entity']}} is
             match : OUT std_logic);
     END COMPONENT;
     {% if context['vote'] %}
-    COMPONENT Voter
-        GENERIC (DATA_LENGTH : INTEGER := 120;
-            WEIGHT_LENGTH : INTEGER := 8;
-            ID_LENGTH : INTEGER := 8);
-        PORT
-        (
-            clock, reset : in std_logic;
-            C0 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C1 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C2 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C3 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C4 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C5 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C6 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C7 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C8 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            C9 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-            Vote : in std_logic_vector(WEIGHT_LENGTH-1 downto 0)
-        );
-    END COMPONENT;
+    component Voter is
+        generic (C0_LENGTH : INTEGER := 16;
+                C1_LENGTH : INTEGER := 16;
+                C2_LENGTH : INTEGER := 16;
+                C3_LENGTH : INTEGER := 16;
+                C4_LENGTH : INTEGER := 16;
+                C5_LENGTH : INTEGER := 16;
+                C6_LENGTH : INTEGER := 16;
+                C7_LENGTH : INTEGER := 16;
+                C8_LENGTH : INTEGER := 16;
+                C9_LENGTH : INTEGER := 16;
+                C0_LENGTHLOG2 : INTEGER := 5;
+                C1_LENGTHLOG2 : INTEGER := 5;
+                C2_LENGTHLOG2 : INTEGER := 5;
+                C3_LENGTHLOG2 : INTEGER := 5;
+                C4_LENGTHLOG2 : INTEGER := 5;
+                C5_LENGTHLOG2 : INTEGER := 5;
+                C6_LENGTHLOG2 : INTEGER := 5;
+                C7_LENGTHLOG2 : INTEGER := 5;
+                C8_LENGTHLOG2 : INTEGER := 5;
+                C9_LENGTHLOG2 : INTEGER := 5;
+                VOTE_LENGTH : INTEGER := 32;
+                ID_LENGTH : INTEGER := 8);
+
+        port (clock : in std_logic;
+                reset : in std_logic;
+                C0 : in std_logic_VECTOR(C0_LENGTH-1 downto 0);
+                C1 : in std_logic_VECTOR(C1_LENGTH-1 downto 0);
+                C2 : in std_logic_VECTOR(C2_LENGTH-1 downto 0);
+                C3 : in std_logic_VECTOR(C3_LENGTH-1 downto 0);
+                C4 : in std_logic_VECTOR(C4_LENGTH-1 downto 0);
+                C5 : in std_logic_VECTOR(C5_LENGTH-1 downto 0);
+                C6 : in std_logic_VECTOR(C6_LENGTH-1 downto 0);
+                C7 : in std_logic_VECTOR(C7_LENGTH-1 downto 0);
+                C8 : in std_logic_VECTOR(C8_LENGTH-1 downto 0);
+                C9 : in std_logic_VECTOR(C9_LENGTH-1 downto 0);
+                result : out std_logic_vector(VOTE_LENGTH-1 downto 0));
+    end component;
     {% endif %}
     --------------------------
     -- Signal Declarations
@@ -171,9 +189,28 @@ begin
     {% if context['vote'] %}
     -- Voter module
     voter_inst : Voter
-    generic map(DATA_LENGTH=>{{context['DATA_LENGTH']}},
-            WEIGHT_LENGTH=>12,
-            ID_LENGTH=>8) -- should be 8 bits, but Vivado synthesizes this wrong. Fix later.
+    generic map (C0_LENGTH=>{{context['Class_Lengths'][0]}},
+                C1_LENGTH=>{{context['Class_Lengths'][1]}},
+                C2_LENGTH=>{{context['Class_Lengths'][2]}},
+                C3_LENGTH=>{{context['Class_Lengths'][3]}},
+                C4_LENGTH=>{{context['Class_Lengths'][4]}},
+                C5_LENGTH=>{{context['Class_Lengths'][5]}},
+                C6_LENGTH=>{{context['Class_Lengths'][6]}},
+                C7_LENGTH=>{{context['Class_Lengths'][7]}},
+                C8_LENGTH=>{{context['Class_Lengths'][8]}},
+                C9_LENGTH=>{{context['Class_Lengths'][9]}},
+                C0_LENGTHLOG2=>{{context['Class_LengthsLog2'][0]}},
+                C1_LENGTHLOG2=>{{context['Class_LengthsLog2'][1]}},
+                C2_LENGTHLOG2=>{{context['Class_LengthsLog2'][2]}},
+                C3_LENGTHLOG2=>{{context['Class_LengthsLog2'][3]}},
+                C4_LENGTHLOG2=>{{context['Class_LengthsLog2'][4]}},
+                C5_LENGTHLOG2=>{{context['Class_LengthsLog2'][5]}},
+                C6_LENGTHLOG2=>{{context['Class_LengthsLog2'][6]}},
+                C7_LENGTHLOG2=>{{context['Class_LengthsLog2'][7]}},
+                C8_LENGTHLOG2=>{{context['Class_LengthsLog2'][8]}},
+                C9_LENGTHLOG2=>{{context['Class_LengthsLog2'][9]}},
+                VOTE_LENGTH=>32,
+                ID_LENGTH=>8)
     port map(clock=>clock,
         reset=>reset,
         C0=>reports10,
@@ -186,7 +223,7 @@ begin
         C7=>reports7,
         C8=>reports8,
         C9=>reports9,
-        Vote=>reports_temp);
+        result=>reports_temp);
     reports <= reports_temp(7 downto 0);
     {% endif %}
     

@@ -3,92 +3,168 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity VoterStage is
-	generic (DATA_LENGTH : INTEGER := 20;
-			WEIGHT_LENGTH : INTEGER := 20;
-			ID_LENGTH : INTEGER := 8;
-			ID : INTEGER := 0);
-			
-	port (clock : in std_logic;
-			reset : in std_logic;
-			C0, C1, C2, C3, C4, C5, C6, C7, C8, C9 : in std_logic_vector(DATA_LENGTH-1 downto 0);
-			WT_in : in std_logic_vector(WEIGHT_LENGTH-1 downto 0);
-			ID_in : in std_logic_vector(ID_LENGTH-1 downto 0);
-			WT_out : out std_logic_vector(WEIGHT_LENGTH-1 downto 0);
-			ID_out : out std_logic_vector(ID_LENGTH-1 downto 0);
-			CO0, CO1, CO2, CO3, CO4, CO5, CO6, CO7, CO8, CO9 : out std_logic_vector(DATA_LENGTH-1 downto 0));
+    generic (C0_SUM_LENGTH : INTEGER := 4;
+            C1_SUM_LENGTH : INTEGER := 4;
+            C2_SUM_LENGTH : INTEGER := 4;
+            C3_SUM_LENGTH : INTEGER := 4;
+            C4_SUM_LENGTH : INTEGER := 4;
+            C5_SUM_LENGTH : INTEGER := 4;
+            C6_SUM_LENGTH : INTEGER := 4;
+            C7_SUM_LENGTH : INTEGER := 4;
+            C8_SUM_LENGTH : INTEGER := 4;
+            C9_SUM_LENGTH : INTEGER := 4;
+            VOTE_LENGTH : INTEGER := 8; -- should be log2(longest classification vec)
+            ID_LENGTH : INTEGER := 8; -- should be byte-aligned
+            ID : INTEGER := 0
+            );
+
+    port (clock : in std_logic;
+            reset : in std_logic;
+            C0_sum : in std_logic_vector(C0_SUM_LENGTH-1 downto 0); 
+            C1_sum : in std_logic_vector(C1_SUM_LENGTH-1 downto 0); 
+            C2_sum : in std_logic_vector(C2_SUM_LENGTH-1 downto 0); 
+            C3_sum : in std_logic_vector(C3_SUM_LENGTH-1 downto 0); 
+            C4_sum : in std_logic_vector(C4_SUM_LENGTH-1 downto 0); 
+            C5_sum : in std_logic_vector(C5_SUM_LENGTH-1 downto 0); 
+            C6_sum : in std_logic_vector(C6_SUM_LENGTH-1 downto 0); 
+            C7_sum : in std_logic_vector(C7_SUM_LENGTH-1 downto 0); 
+            C8_sum : in std_logic_vector(C8_SUM_LENGTH-1 downto 0); 
+            C9_sum : in std_logic_vector(C9_SUM_LENGTH-1 downto 0); 
+            ID_in : in std_logic_vector(ID_LENGTH-1 downto 0);
+            vote_in : in std_logic_vector(VOTE_LENGTH-1 downto 0);
+            C0_sum_out : out std_logic_vector(C0_SUM_LENGTH-1 downto 0);
+            C1_sum_out : out std_logic_vector(C1_SUM_LENGTH-1 downto 0);
+            C2_sum_out : out std_logic_vector(C2_SUM_LENGTH-1 downto 0);
+            C3_sum_out : out std_logic_vector(C3_SUM_LENGTH-1 downto 0);
+            C4_sum_out : out std_logic_vector(C4_SUM_LENGTH-1 downto 0);
+            C5_sum_out : out std_logic_vector(C5_SUM_LENGTH-1 downto 0);
+            C6_sum_out : out std_logic_vector(C6_SUM_LENGTH-1 downto 0);
+            C7_sum_out : out std_logic_vector(C7_SUM_LENGTH-1 downto 0);
+            C8_sum_out : out std_logic_vector(C8_SUM_LENGTH-1 downto 0);
+            C9_sum_out : out std_logic_vector(C9_SUM_LENGTH-1 downto 0);
+            ID_out : out std_logic_vector(ID_LENGTH-1 downto 0);
+            vote_out : out std_logic_vector(VOTE_LENGTH-1 downto 0)
+            );
 end VoterStage;
 
 architecture Structure of VoterStage is
-	component HammingWeight is
-		generic (INPUT_LENGTH : INTEGER := 20;
-				WEIGHT_LENGTH : INTEGER := 20);
-				
-		port (din : in std_logic_vector(INPUT_LENGTH-1 downto 0);
-				weight : out std_logic_vector(WEIGHT_LENGTH-1 downto 0));
-	end component;
-
-	signal this_weight : std_logic_vector(WEIGHT_LENGTH-1 downto 0);
-	signal this_data : std_logic_vector(DATA_LENGTH-1 downto 0);
+    signal ID_slv : std_logic_vector(VOTE_LENGTH-1 downto 0);
 begin
-	with ID select
-		this_data <= C0 when 0,
-					C1 when 1,
-					C2 when 2,
-					C3 when 3,
-					C4 when 4,
-					C5 when 5,
-					C6 when 6,
-					C7 when 7,
-					C8 when 8,
-					C9 when 9,
-					(others=>'0') when others;
+    -- Signal assignment for std_logic_vector version of ID generic
+    ID_slv <= std_logic_vector(to_unsigned(ID, VOTE_LENGTH));
 
-	hweight : HammingWeight
-	generic map (INPUT_LENGTH=>DATA_LENGTH,
-				WEIGHT_LENGTH=>WEIGHT_LENGTH)
-	port map (din=>this_data,
-				weight=>this_weight);				
-				
-	process(clock)
-	begin
-		if (reset = '1') then
-			CO0 <= (others=>'0');
-			CO1 <= (others=>'0');
-			CO2 <= (others=>'0');
-			CO3 <= (others=>'0');
-			CO4 <= (others=>'0');
-			CO5 <= (others=>'0');
-			CO6 <= (others=>'0');
-			CO7 <= (others=>'0');
-			CO8 <= (others=>'0');
-			CO9 <= (others=>'0');
-		else
-			CO0 <= C0;
-			CO1 <= C1;
-			CO2 <= C2;
-			CO3 <= C3;
-			CO4 <= C4;
-			CO5 <= C5;
-			CO6 <= C6;
-			CO7 <= C7;
-			CO8 <= C8;
-			CO9 <= C9;
-		end if;
-	end process;
-	
-	process(clock)
-	begin
-		if (reset = '1') then
-			ID_out <= (others=>'0');
-			WT_out <= (others=>'0');
-		else
-			if (this_weight > WT_in) then
-				WT_out <= this_weight;
-				ID_out <= std_logic_vector(to_unsigned(ID, ID_LENGTH));
-			else
-				WT_out <= WT_in;
-				ID_out <= ID_in;
-			end if;
-		end if;
-	end process;
+    process(clock)
+    begin
+        if (rising_edge(clock)) then
+            if (reset = '1') then
+                C0_sum_out <= (others=>'0');
+                C1_sum_out <= (others=>'0');
+                C2_sum_out <= (others=>'0');
+                C3_sum_out <= (others=>'0');
+                C4_sum_out <= (others=>'0');
+                C5_sum_out <= (others=>'0');
+                C6_sum_out <= (others=>'0');
+                C7_sum_out <= (others=>'0');
+                C8_sum_out <= (others=>'0');
+                C9_sum_out <= (others=>'0');
+                vote_out <= (others=>'0');
+                ID_out <= (others=>'0');
+            else
+                C0_sum_out <= C0_sum;
+                C1_sum_out <= C1_sum;
+                C2_sum_out <= C2_sum;
+                C3_sum_out <= C3_sum;
+                C4_sum_out <= C4_sum;
+                C5_sum_out <= C5_sum;
+                C6_sum_out <= C6_sum;
+                C7_sum_out <= C7_sum;
+                C8_sum_out <= C8_sum;
+                C9_sum_out <= C9_sum;
+                if (ID = 0) then
+                    if (C0_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C0_sum'length => '0') & C0_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 1) then
+                    if (C1_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C1_sum'length => '0') & C1_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 2) then
+                    if (C2_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C2_sum'length => '0') & C2_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 3) then
+                    if (C3_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C3_sum'length => '0') & C3_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 4) then
+                    if (C4_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C4_sum'length => '0') & C4_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 5) then
+                    if (C5_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C5_sum'length => '0') & C5_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 6) then
+                    if (C6_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C6_sum'length => '0') & C6_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 7) then
+                    if (C7_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C7_sum'length => '0') & C7_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 8) then
+                    if (C8_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C8_sum'length => '0') & C8_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                elsif (ID = 9) then
+                    if (C9_sum > vote_in) then
+                        vote_out <= (vote_out'length -1 downto C9_sum'length => '0') & C9_sum;
+                        ID_out <= ID_slv;
+                    else
+                        vote_out <= vote_in;
+                        ID_out <= ID_in;
+                    end if;
+                else -- improper generic assgnment condition
+                    vote_out <= (others=>'1');
+                    ID_out <= (others=>'1');
+                end if;
+            end if;
+        end if;
+    end process;
 end Structure;
